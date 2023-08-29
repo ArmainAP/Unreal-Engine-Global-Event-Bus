@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "GlobalEventBus",
+	"Description": "Global Event Bus for Unreal Engine",
+	"Category": "Other",
+	"CreatedBy": "ArmainAP",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "GlobalEventBus",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
