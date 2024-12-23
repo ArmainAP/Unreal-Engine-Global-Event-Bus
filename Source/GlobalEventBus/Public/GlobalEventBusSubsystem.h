@@ -14,6 +14,7 @@ class GLOBALEVENTBUS_API UGlobalEventBusSubsystem : public UGameInstanceSubsyste
 	GENERATED_BODY()
 
 public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Global Event Bus", meta = (WorldContext = "WorldContextObject"))
@@ -48,6 +49,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Global Event Bus", meta = (WorldContext = "WorldContextObject"))
 	static bool InvokeGlobalPayloadEventID(const UObject* WorldContextObject, const FString& ID, const UObject* Payload);
+
+private:
+	void RegisterConsoleCommands();
+	void HandleInvokeEvent(const TArray<FString>& Args);
 
 protected:
 	typedef TArray<FGlobalEvent> GlobalEventArray;

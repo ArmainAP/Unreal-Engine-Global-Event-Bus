@@ -2,6 +2,13 @@
 
 #include "GlobalEventBusSubsystem.h"
 
+
+void UGlobalEventBusSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	RegisterConsoleCommands();
+}
+
 void UGlobalEventBusSubsystem::Deinitialize()
 {
 	GlobalEvents.Empty();
@@ -146,4 +153,36 @@ bool UGlobalEventBusSubsystem::InvokeGlobalPayloadEventID(const UObject* WorldCo
 		bWasExecuted = Event.ExecuteIfBound(Payload);
 	}
 	return bWasExecuted;
+}
+
+void UGlobalEventBusSubsystem::RegisterConsoleCommands()
+{
+	IConsoleManager& ConsoleManager = IConsoleManager::Get();
+	ConsoleManager.RegisterConsoleCommand(
+		TEXT("InvokeGlobalEvent"),
+		TEXT("Invoke a global event by its ID."),
+		FConsoleCommandWithArgsDelegate::CreateUObject(this, &UGlobalEventBusSubsystem::HandleInvokeEvent),
+		ECVF_Cheat
+	);
+}
+
+void UGlobalEventBusSubsystem::HandleInvokeEvent(const TArray<FString>& Args)
+{
+	if (Args.Num() < 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InvokeGlobalEvent: Missing event ID argument."));
+		return;
+	}
+
+	const FString EventID = Args[0];
+	const UObject* WorldContextObject = GEngine->GetWorldFromContextObjectChecked(this);
+
+	if (!InvokeGlobalEventID(WorldContextObject, EventID))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InvokeGlobalEvent: Failed to invoke event with ID '%s'"), *EventID);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("InvokeGlobalEvent: Successfully invoked event with ID '%s'"), *EventID);
+	}
 }
