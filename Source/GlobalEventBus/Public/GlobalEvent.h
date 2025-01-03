@@ -5,7 +5,7 @@
 #include "Engine/DataAsset.h"
 #include "GlobalEvent.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class GLOBALEVENTBUS_API UGlobalEvent : public UDataAsset
 {
 	GENERATED_BODY()

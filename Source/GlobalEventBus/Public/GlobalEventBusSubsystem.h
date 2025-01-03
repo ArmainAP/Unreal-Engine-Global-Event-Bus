@@ -5,8 +5,8 @@
 #include "GlobalEvent.h"
 #include "GlobalEventBusSubsystem.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE(FGlobalEvent);
-DECLARE_DYNAMIC_DELEGATE_OneParam(FGlobalEventPayload, const UObject*, Payload);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FGlobalEvent, const UGlobalEvent*, Event);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FGlobalEventPayload, const UGlobalEvent*, Event, const UObject*, Payload);
 
 UCLASS()
 class GLOBALEVENTBUS_API UGlobalEventBusSubsystem : public UGameInstanceSubsystem
@@ -55,6 +55,9 @@ private:
 	void HandleInvokeEvent(const TArray<FString>& Args);
 
 protected:
+	UPROPERTY()
+	TMap<FString, const UGlobalEvent*> GlobalEventAssets;
+	
 	typedef TArray<FGlobalEvent> GlobalEventArray;
 	TMap<FString, GlobalEventArray> GlobalEvents;
 

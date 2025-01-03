@@ -21,6 +21,9 @@ bool UGlobalEventBusSubsystem::RegisterGlobalEventAsset(const UObject* WorldCont
 {
 	if(Asset->IsValidLowLevel())
 	{
+		const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+		UGlobalEventBusSubsystem* Manager = World->GetGameInstance()->GetSubsystem<UGlobalEventBusSubsystem>();
+		Manager->GlobalEventAssets.Add(Asset->ID, Asset);
 		return RegisterGlobalEventID(WorldContextObject, Asset->ID, Callback);
 	}
 	return false;
@@ -117,10 +120,11 @@ bool UGlobalEventBusSubsystem::InvokeGlobalEventID(const UObject* WorldContextOb
 	UGlobalEventBusSubsystem* Manager = World->GetGameInstance()->GetSubsystem<UGlobalEventBusSubsystem>();
 
 	bool bWasExecuted = false;
+	const UGlobalEvent* EventAsset = Manager->GlobalEventAssets.FindOrAdd(ID);
 	GlobalEventArray& EventArray = Manager->GlobalEvents.FindOrAdd(ID);
 	for (const FGlobalEvent& Event : EventArray)
 	{
-		bWasExecuted = Event.ExecuteIfBound();
+		bWasExecuted = Event.ExecuteIfBound(EventAsset);
 	}
 
 	return bWasExecuted;
@@ -147,10 +151,11 @@ bool UGlobalEventBusSubsystem::InvokeGlobalPayloadEventID(const UObject* WorldCo
 	UGlobalEventBusSubsystem* Manager = World->GetGameInstance()->GetSubsystem<UGlobalEventBusSubsystem>();
 
 	bool bWasExecuted = false;
+	const UGlobalEvent* EventAsset = Manager->GlobalEventAssets.FindOrAdd(ID);
 	PayloadGlobalEventArray& EventArray = Manager->GlobalPayloadEvents.FindOrAdd(ID);
 	for (const FGlobalEventPayload& Event : EventArray)
 	{
-		bWasExecuted = Event.ExecuteIfBound(Payload);
+		bWasExecuted = Event.ExecuteIfBound(EventAsset, Payload);
 	}
 	return bWasExecuted;
 }
