@@ -53,6 +53,7 @@ public:
 private:
 	void RegisterConsoleCommands();
 	void HandleInvokeEvent(const TArray<FString>& Args);
+	static UGlobalEventBusSubsystem* Get(const UObject* WorldContextObject);
 
 protected:
 	UPROPERTY()
